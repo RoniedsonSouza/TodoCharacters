@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TodoCharacters.Application/TodoCharacters.Application.csproj" />
+    <Project Path="src/TodoCharacters.Domain/TodoCharacters.Domain.csproj" />
+    <Project Path="src/TodoCharacters.Infrastructure/TodoCharacters.Infrastructure.csproj" />
+    <Project Path="src/TodoCharacters.WebApi/TodoCharacters.WebApi.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TodoCharacters.ArchitectureTests/TodoCharacters.ArchitectureTests.csproj" />
+    <Project Path="tests/TodoCharacters.FunctionalTests/TodoCharacters.FunctionalTests.csproj" />
+    <Project Path="tests/TodoCharacters.IntegrationTests/TodoCharacters.IntegrationTests.csproj" />
+    <Project Path="tests/TodoCharacters.UnitTests/TodoCharacters.UnitTests.csproj" />
+  </Folder>
+</Solution>
