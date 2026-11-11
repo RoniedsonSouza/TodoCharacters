@@ -9,12 +9,25 @@ namespace TodoCharacters.IntegrationTests.Persistence;
 
 public class DeleteParentTaskCascadeTests
 {
-    private static bool CanConnectToSqlServer()
+    private static string? ConnectionString(int? connectTimeoutSeconds = null)
+    {
+        var password = Environment.GetEnvironmentVariable("MSSQL_SA_PASSWORD");
+        if (string.IsNullOrWhiteSpace(password))
+            return null;
+
+        var timeout = connectTimeoutSeconds is null
+            ? string.Empty
+            : $";Connect Timeout={connectTimeoutSeconds.Value}";
+
+        return $"Server=localhost,1433;Database=TodoCharacters_Test;User Id=sa;Password={password};TrustServerCertificate=True{timeout}";
+    }
+
+    private static bool CanConnectToSqlServer(string connectionString)
     {
         try
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlServer("Server=localhost,1433;Database=TodoCharacters_Test;User Id=sa;Password=TodoCharacters@123;TrustServerCertificate=True;Connect Timeout=3")
+                .UseSqlServer(connectionString)
                 .Options;
             using var context = new AppDbContext(options);
             context.Database.EnsureCreated();
@@ -29,12 +42,13 @@ public class DeleteParentTaskCascadeTests
     [Fact]
     public async Task Delete_parent_should_remove_subtasks_in_same_transaction()
     {
-        if (!CanConnectToSqlServer())
+        var connectionString = ConnectionString();
+        var probe = ConnectionString(connectTimeoutSeconds: 3);
+        if (connectionString is null || probe is null || !CanConnectToSqlServer(probe))
         {
-            return; // Skip when SQL Server container is not running
+            return; // Skip when SQL Server is offline or MSSQL_SA_PASSWORD is unset
         }
 
-        var connectionString = "Server=localhost,1433;Database=TodoCharacters_Test;User Id=sa;Password=TodoCharacters@123;TrustServerCertificate=True";
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseSqlServer(connectionString)
             .Options;
