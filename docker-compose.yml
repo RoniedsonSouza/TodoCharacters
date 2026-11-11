@@ -4,13 +4,13 @@ services:
     container_name: todocharacters-sqlserver
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "TodoCharacters@123"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in a gitignored .env file. See .env.example.}
     ports:
       - "1433:1433"
     volumes:
       - sqlserver_data:/var/lib/sqlserver/data
     healthcheck:
-      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "TodoCharacters@123" -C -Q "SELECT 1" || exit 1
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -C -Q "SELECT 1" || exit 1
       interval: 10s
       timeout: 5s
       retries: 10
